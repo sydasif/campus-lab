@@ -6,11 +6,17 @@ mgmt:
   ipv4-subnet: 192.168.122.0/24
 
 topology:
-  kinds:
-    arista_ceos:
-      image: ceos:4.32.0F
-    cisco_iol:
+  defaults:
+    kind: arista_ceos
+    image: ceos:4.32.0F
+  groups:
+    distribution:
+      kind: cisco_iol
       image: vrnetlab/cisco_iol:17.12.01
+    access:
+      kind: cisco_iol
+      image: vrnetlab/cisco_iol:l2-17.12.01
+      type: l2
   nodes:
     C1:
       kind: arista_ceos
@@ -19,7 +25,6 @@ topology:
     C2:
       kind: arista_ceos
       mgmt-ipv4: 192.168.122.12
-      group: core
     D1:
       kind: cisco_iol
       mgmt-ipv4: 192.168.122.13
@@ -30,16 +35,12 @@ topology:
       group: distribution
     A1:
       kind: cisco_iol
-      image: vrnetlab/cisco_iol:l2-17.12.01
       mgmt-ipv4: 192.168.122.15
       group: access
-      type: l2
     A2:
       kind: cisco_iol
-      image: vrnetlab/cisco_iol:l2-17.12.01
       mgmt-ipv4: 192.168.122.16
       group: access
-      type: l2
 
   links:
     - endpoints: ["C1:eth1", "C2:eth1"]
@@ -47,6 +48,7 @@ topology:
     - endpoints: ["C1:eth3", "D2:eth1"]
     - endpoints: ["C2:eth2", "D1:eth2"]
     - endpoints: ["C2:eth3", "D2:eth2"]
+
     - endpoints: ["D1:eth3", "A1:eth1"]
     - endpoints: ["D1:eth4", "A2:eth1"]
     - endpoints: ["D2:eth3", "A1:eth2"]
