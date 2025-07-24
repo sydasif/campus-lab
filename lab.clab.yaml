@@ -15,24 +15,30 @@ topology:
     C1:
       kind: arista_ceos
       mgmt-ipv4: 192.168.122.11
+      group: core
     C2:
       kind: arista_ceos
       mgmt-ipv4: 192.168.122.12
+      group: core
     D1:
       kind: cisco_iol
       mgmt-ipv4: 192.168.122.13
+      group: distribution
     D2:
       kind: cisco_iol
       mgmt-ipv4: 192.168.122.14
+      group: distribution
     A1:
       kind: cisco_iol
       image: vrnetlab/cisco_iol:l2-17.12.01
       mgmt-ipv4: 192.168.122.15
+      group: access
       type: l2
     A2:
       kind: cisco_iol
       image: vrnetlab/cisco_iol:l2-17.12.01
       mgmt-ipv4: 192.168.122.16
+      group: access
       type: l2
 
   links:
