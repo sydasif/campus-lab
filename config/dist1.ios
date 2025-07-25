@@ -22,34 +22,34 @@ interface Ethernet2
 interface Ethernet3
    description Downlink to ACCESS-SW-01
    switchport mode trunk
-   switchport trunk allowed vlan 10,20,30,99
+   switchport trunk allowed vlan 10,20,30
    no shutdown
 
 interface Ethernet4
    description Backup Downlink to ACCESS-SW-02
    switchport mode trunk
-   switchport trunk allowed vlan 10,20,30,99
+   switchport trunk allowed vlan 10,20,30
    no shutdown
 
 interface Vlan10
    description DATA_VLAN_Gateway
    ip address 10.10.10.2/24
-   vrrp 10 ip 10.10.10.1
-   vrrp 10 priority 110
+   vrrp 10 ipv4 10.10.10.1
+   vrrp 10 priority-level 110
    no shutdown
 
 interface Vlan20
    description VOICE_VLAN_Gateway
    ip address 10.20.20.2/24
-   vrrp 20 ip 10.20.20.1
-   vrrp 20 priority 110
+   vrrp 20 ipv4 10.20.20.1
+   vrrp 20 priority-level 110
    no shutdown
 
 interface Vlan30
    description GUEST_VLAN_Gateway
    ip address 10.30.30.2/24
-   vrrp 30 ip 10.30.30.1
-   vrrp 30 priority 110
+   vrrp 30 ipv4 10.30.30.1
+   vrrp 30 priority-level 110
    no shutdown
 
 router ospf 1
@@ -59,7 +59,6 @@ router ospf 1
    network 10.10.10.0/24 area 1
    network 10.20.20.0/24 area 1
    network 10.30.30.0/24 area 1
-   network 192.168.99.0/24 area 1
 
 spanning-tree mode mstp
 spanning-tree mst 0 priority 4096

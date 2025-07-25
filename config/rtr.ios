@@ -20,4 +20,3 @@ router ospf 1
    network 10.10.10.0 0.0.0.255 area 1
    network 10.20.20.0 0.0.0.255 area 1
    network 10.30.30.0 0.0.0.255 area 1
-   network 192.168.99.0 0.0.0.255 area 1
