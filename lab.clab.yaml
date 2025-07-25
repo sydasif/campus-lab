@@ -6,50 +6,44 @@ mgmt:
   ipv4-subnet: 192.168.122.0/24
 
 topology:
-  defaults:
-    kind: arista_ceos
-    image: ceos:4.32.0F
   groups:
-    distribution:
+    core:
       kind: cisco_iol
       image: vrnetlab/cisco_iol:17.12.01
+    distribution:
+      kind: arista_ceos
+      image: ceos:4.32.0F
     access:
       kind: cisco_iol
       image: vrnetlab/cisco_iol:l2-17.12.01
       type: l2
   nodes:
-    C1:
+    RTR:
+      kind: cisco_iol
+      mgmt-ipv4: 192.168.122.10
+      group: core
+    DIST1:
       kind: arista_ceos
       mgmt-ipv4: 192.168.122.11
-      group: core
-    C2:
+      group: distribution
+    DIST2:
       kind: arista_ceos
       mgmt-ipv4: 192.168.122.12
-    D1:
-      kind: cisco_iol
-      mgmt-ipv4: 192.168.122.13
       group: distribution
-    D2:
+    ACCESS1:
       kind: cisco_iol
-      mgmt-ipv4: 192.168.122.14
-      group: distribution
-    A1:
-      kind: cisco_iol
-      mgmt-ipv4: 192.168.122.15
+      mgmt-ipv4: 192.168.122.21
       group: access
-    A2:
+    ACCESS2:
       kind: cisco_iol
-      mgmt-ipv4: 192.168.122.16
+      mgmt-ipv4: 192.168.122.22
       group: access
 
   links:
-    - endpoints: ["C1:eth1", "C2:eth1"]
-    - endpoints: ["C1:eth2", "D1:eth1"]
-    - endpoints: ["C1:eth3", "D2:eth1"]
-    - endpoints: ["C2:eth2", "D1:eth2"]
-    - endpoints: ["C2:eth3", "D2:eth2"]
-
-    - endpoints: ["D1:eth3", "A1:eth1"]
-    - endpoints: ["D1:eth4", "A2:eth1"]
-    - endpoints: ["D2:eth3", "A1:eth2"]
-    - endpoints: ["D2:eth4", "A2:eth2"]
+    - endpoints: ["RTR:eth0", "DIST1:eth1"]
+    - endpoints: ["RTR:eth1", "DIST2:eth1"]
+    - endpoints: ["DIST1:eth2", "DIST2:eth2"]
+    - endpoints: ["DIST1:eth3", "ACCESS1:eth0"]
+    - endpoints: ["DIST1:eth4", "ACCESS2:eth1"]
+    - endpoints: ["DIST2:eth3", "ACCESS2:eth0"]
+    - endpoints: ["DIST2:eth4", "ACCESS1:eth1"]
