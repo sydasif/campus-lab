@@ -6,6 +6,10 @@ mgmt:
   ipv4-subnet: 192.168.122.0/24
 
 topology:
+  defaults:
+    kind: linux
+    image: alpine:latest
+
   groups:
     core:
       kind: cisco_iol
@@ -22,11 +26,11 @@ topology:
       kind: cisco_iol
       mgmt-ipv4: 192.168.122.10
       group: core
-    DIST1:
+    SW1:
       kind: arista_ceos
       mgmt-ipv4: 192.168.122.11
       group: distribution
-    DIST2:
+    SW2:
       kind: arista_ceos
       mgmt-ipv4: 192.168.122.12
       group: distribution
@@ -38,12 +42,36 @@ topology:
       kind: cisco_iol
       mgmt-ipv4: 192.168.122.22
       group: access
+    HOST1:
+      kind: linux
+      mgmt-ipv4: 192.168.122.101
+      exec:
+        - ip addr add 10.10.10.100/24 dev eth1
+        - ip route add default via 10.10.10.1
+        - echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        - apk add --no-cache iputils tcpdump curl iperf3 nmap
+    HOST2:
+      kind: linux
+      mgmt-ipv4: 192.168.122.102
+      exec:
+        - ip addr add 10.30.30.100/24 dev eth1
+        - ip route add default via 10.30.30.1
+        - echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        - apk add --no-cache iputils tcpdump curl iperf3 nmap
 
   links:
-    - endpoints: ["RTR:eth1", "DIST1:eth1"]
-    - endpoints: ["RTR:eth2", "DIST2:eth1"]
-    - endpoints: ["DIST1:eth2", "DIST2:eth2"]
-    - endpoints: ["DIST1:eth3", "ACCESS1:eth1"]
-    - endpoints: ["DIST1:eth4", "ACCESS2:eth1"]
-    - endpoints: ["DIST2:eth3", "ACCESS2:eth2"]
-    - endpoints: ["DIST2:eth4", "ACCESS1:eth2"]
+    - endpoints: ["RTR:eth1", "SW1:eth1"]
+    - endpoints: ["RTR:eth2", "SW2:eth1"]
+
+    - endpoints: ["SW1:eth5", "SW2:eth5"]
+    - endpoints: ["SW1:eth6", "SW2:eth6"]
+
+    - endpoints: ["SW1:eth3", "ACCESS1:eth1"]
+    - endpoints: ["SW1:eth4", "ACCESS2:eth1"]
+
+    - endpoints: ["SW2:eth3", "ACCESS2:eth2"]
+    - endpoints: ["SW2:eth4", "ACCESS1:eth2"]
+
+    - endpoints: ["ACCESS1:eth3", "HOST1:eth1"] # Client1 to Data VLAN
+    - endpoints: ["ACCESS2:eth3", "HOST2:eth1"] # Client2 to Guest VLAN
+
