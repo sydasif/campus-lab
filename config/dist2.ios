@@ -1,0 +1,64 @@
+hostname DIST-SW-02
+
+vlan 10
+   name DATA_VLAN
+vlan 20
+   name VOICE_VLAN
+vlan 30
+   name GUEST_VLAN
+
+interface Ethernet1
+   description Uplink to CORE-RTR-01
+   no switchport
+   ip address 10.1.2.2/30
+   no shutdown
+
+interface Ethernet2
+   description Link to DIST-SW-01
+   no switchport
+   ip address 10.2.1.2/30
+   no shutdown
+
+interface Ethernet3
+   description Downlink to ACCESS-SW-02
+   switchport mode trunk
+   switchport trunk allowed vlan 10,20,30,99
+   no shutdown
+
+interface Ethernet4
+   description Backup Downlink to ACCESS-SW-01
+   switchport mode trunk
+   switchport trunk allowed vlan 10,20,30,99
+   no shutdown
+
+interface Vlan10
+   description DATA_VLAN_Gateway
+   ip address 10.10.10.3/24
+   vrrp 10 ip 10.10.10.1
+   vrrp 10 priority 100
+   no shutdown
+
+interface Vlan20
+   description VOICE_VLAN_Gateway
+   ip address 10.20.20.3/24
+   vrrp 20 ip 10.20.20.1
+   vrrp 20 priority 100
+   no shutdown
+
+interface Vlan30
+   description GUEST_VLAN_Gateway
+   ip address 10.30.30.3/24
+   vrrp 30 ip 10.30.30.1
+   vrrp 30 priority 100
+   no shutdown
+
+router ospf 1
+   router-id 3.3.3.3
+   network 10.1.2.0/30 area 0
+   network 10.2.1.0/30 area 0
+   network 10.10.10.0/24 area 1
+   network 10.20.20.0/24 area 1
+   network 10.30.30.0/24 area 1
+
+spanning-tree mode mstp
+spanning-tree mst 0 priority 8192

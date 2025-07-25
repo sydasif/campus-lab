@@ -1,0 +1,23 @@
+hostname CORE-RTR-01
+
+interface Loopback0
+   ip address 1.1.1.1 255.255.255.255
+
+interface Ethernet0/0
+   description Link to DIST-SW-01
+   ip address 10.1.1.1 255.255.255.252
+   no shutdown
+
+interface Ethernet0/1
+   description Link to DIST-SW-02
+   ip address 10.1.2.1 255.255.255.252
+   no shutdown
+
+router ospf 1
+   router-id 1.1.1.1
+   network 10.1.1.0 0.0.0.3 area 0
+   network 10.1.2.0 0.0.0.3 area 0
+   network 10.10.10.0 0.0.0.255 area 1
+   network 10.20.20.0 0.0.0.255 area 1
+   network 10.30.30.0 0.0.0.255 area 1
+   network 192.168.99.0 0.0.0.255 area 1
