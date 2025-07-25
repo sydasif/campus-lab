@@ -40,10 +40,10 @@ topology:
       group: access
 
   links:
-    - endpoints: ["RTR:eth0", "DIST1:eth1"]
-    - endpoints: ["RTR:eth1", "DIST2:eth1"]
+    - endpoints: ["RTR:eth1", "DIST1:eth1"]
+    - endpoints: ["RTR:eth2", "DIST2:eth1"]
     - endpoints: ["DIST1:eth2", "DIST2:eth2"]
-    - endpoints: ["DIST1:eth3", "ACCESS1:eth0"]
+    - endpoints: ["DIST1:eth3", "ACCESS1:eth1"]
     - endpoints: ["DIST1:eth4", "ACCESS2:eth1"]
-    - endpoints: ["DIST2:eth3", "ACCESS2:eth0"]
-    - endpoints: ["DIST2:eth4", "ACCESS1:eth1"]
+    - endpoints: ["DIST2:eth3", "ACCESS2:eth2"]
+    - endpoints: ["DIST2:eth4", "ACCESS1:eth2"]
