@@ -3,12 +3,12 @@ vlan 10
 name DATA_VLAN
 vlan 30
 name GUEST_VLAN
-interface Ethernet0/3
+interface Ethernet 3
 no shutdown
 description ACCESS1_LINK
 switchport mode access
 switchport access vlan 10
-interface Ethernet0/4
+interface Ethernet 4
 description ACCESS2_LINK
 no shutdown
 switchport mode access
