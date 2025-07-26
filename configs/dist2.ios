@@ -1,22 +1,22 @@
 hostname SW2
-vlan 10
-name DATA_VLAN
-vlan 30
-name GUEST_VLAN
-interface Ethernet 3
-no shutdown
-description ACCESS2_LINK
-switchport mode access
-switchport access vlan 30
-interface Ethernet 4
-description ACCESS1_LINK
-no shutdown
-switchport mode access
-switchport access vlan 10
+!
+vlan 10,30
+!
+interface Ethernet3
+   switchport trunk allowed vlan 10,30
+   switchport mode trunk
+!
+interface Ethernet4
+   switchport trunk allowed vlan 10,30
+   switchport mode trunk
+!
 interface Vlan10
-no shutdown
-ip address 10.10.10.2 255.255.255.0
+   ip address 10.10.10.2/24
+!
 interface Vlan30
-no shutdown
-ip address 10.30.30.1 255.255.255.0
+   ip address 10.30.30.1/24
+!
 ip routing
+!
+end
+write memory

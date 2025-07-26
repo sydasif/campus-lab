@@ -1,20 +1,20 @@
-hostname ACCESS2
-vlan 10
-name DATA_VLAN
-vlan 30
-name GUEST_VLAN
+hostname ACCESS1
+!
+Vlan30
+!
 interface Ethernet0/1
-no shutdown
-description SW1_LINK
-switchport mode access
-switchport access vlan 30
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 10,30
+ switchport mode trunk
+!
 interface Ethernet0/2
-no shutdown
-description SW2_LINK
-switchport mode access
-switchport access vlan 10
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 10,30
+ switchport mode trunk
+!
 interface Ethernet0/3
-no shutdown
-description HOST2
-switchport access vlan 30
-switchport mode access
+ switchport access vlan 10
+ switchport mode access
+!
+end
+write memory
