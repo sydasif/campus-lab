@@ -26,42 +26,22 @@ topology:
       kind: cisco_iol
       mgmt-ipv4: 192.168.122.10
       group: core
-      labels:
-        graph-posX: "655"
-        graph-posY: "265"
-        graph-groupLabelPos: bottom-center
     SW1:
       kind: arista_ceos
       mgmt-ipv4: 192.168.122.11
       group: distribution
-      labels:
-        graph-posX: "555"
-        graph-posY: "345"
-        graph-groupLabelPos: bottom-center
     SW2:
       kind: arista_ceos
       mgmt-ipv4: 192.168.122.12
       group: distribution
-      labels:
-        graph-posX: "765"
-        graph-posY: "345"
-        graph-groupLabelPos: bottom-center
     ACCESS1:
       kind: cisco_iol
       mgmt-ipv4: 192.168.122.21
       group: access
-      labels:
-        graph-posX: "725"
-        graph-posY: "465"
-        graph-groupLabelPos: bottom-center
     ACCESS2:
       kind: cisco_iol
       mgmt-ipv4: 192.168.122.22
       group: access
-      labels:
-        graph-posX: "545"
-        graph-posY: "425"
-        graph-groupLabelPos: bottom-center
     HOST1:
       kind: linux
       mgmt-ipv4: 192.168.122.101
@@ -70,10 +50,6 @@ topology:
         - ip route add default via 10.10.10.1
         - echo "nameserver 8.8.8.8" > /etc/resolv.conf
         - apk add --no-cache iputils tcpdump curl iperf3 nmap
-      labels:
-        graph-posX: "855"
-        graph-posY: "445"
-        graph-groupLabelPos: bottom-center
     HOST2:
       kind: linux
       mgmt-ipv4: 192.168.122.102
