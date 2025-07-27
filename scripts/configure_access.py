@@ -1,38 +1,29 @@
+import argparse
 import time
 from pathlib import Path
 
 import netmiko
 
-# Device parameters
-devices = {
-    "ACCESS1": {
-        "device_type": "cisco_ios",
-        "ip": "192.168.122.21",
-        "username": "admin",
-        "password": "admin",
-    },
-    "ACCESS2": {
-        "device_type": "cisco_ios",
-        "ip": "192.168.122.22",
-        "username": "admin",
-        "password": "admin",
-    },
-}
 
-
-def configure_access(device_name, device_params):
+def configure_access(device_name, ip, device_type, username, password):
+    device_params = {
+        "device_type": device_type,
+        "ip": ip,
+        "username": username,
+        "password": password,
+    }
     try:
-        print(f"Connecting to {device_name}...")
+        print(f"Connecting to {device_name} ({ip})...")
         net_connect = netmiko.ConnectHandler(**device_params)
         print(f"Successfully connected to {device_name}")
 
         # Determine the config file based on the device name
-        if device_name == "ACCESS1":
-            config_file = "configs/access1.ios"
-        elif device_name == "ACCESS2":
-            config_file = "configs/access2.ios"
-        else:
-            print(f"Error: Unknown device {device_name}")
+        # Assuming config files are named like access1.ios, access2.ios
+        config_file = f"configs/{device_name.lower()}.ios"
+        if not Path(config_file).exists():
+            print(
+                f"Error: Configuration file {config_file} not found for {device_name}"
+            )
             return
 
         config_commands = Path(config_file).read_text(encoding="utf-8").splitlines()
@@ -49,9 +40,18 @@ def configure_access(device_name, device_params):
 
 
 if __name__ == "__main__":
-    start_time = time.time()
-    for device_name, device_params in devices.items():
-        configure_access(device_name, device_params)
+    parser = argparse.ArgumentParser(description="Configure an access device.")
+    parser.add_argument("--name", required=True, help="Device name (e.g., ACCESS1)")
+    parser.add_argument("--ip", required=True, help="Device IP address")
+    parser.add_argument(
+        "--type", required=True, help="Netmiko device type (e.g., cisco_ios)"
+    )
+    parser.add_argument("--username", default="admin", help="Device username")
+    parser.add_argument("--password", default="admin", help="Device password")
 
+    args = parser.parse_args()
+
+    start_time = time.time()
+    configure_access(args.name, args.ip, args.type, args.username, args.password)
     end_time = time.time()
     print(f"Script execution time: {end_time - start_time:.2f} seconds")

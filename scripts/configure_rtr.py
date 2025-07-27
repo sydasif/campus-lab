@@ -1,44 +1,57 @@
+import argparse
 import time
+from pathlib import Path
 
 import netmiko
 
-time.sleep(10)
 
-# Device parameters
-device = {
-    "device_type": "cisco_ios",
-    "ip": "192.168.122.10",
-    "username": "admin",
-    "password": "admin",
-}
-
-
-def configure_rtr(device_params):
+def configure_rtr(device_name, ip, device_type, username, password):
+    device_params = {
+        "device_type": device_type,
+        "ip": ip,
+        "username": username,
+        "password": password,
+    }
     try:
-        print("Connecting to RTR...")
+        print(f"Connecting to {device_name} ({ip})...")
         net_connect = netmiko.ConnectHandler(**device_params)
-        print("Successfully connected to RTR")
+        print(f"Successfully connected to {device_name}")
 
-        # Read configuration commands from file
-        with open("configs/rtr.ios") as f:
+        # Assuming config file is named rtr.ios
+        config_file = "configs/rtr.ios"
+        if not Path(config_file).exists():
+            print(
+                f"Error: Configuration file {config_file} not found for {device_name}"
+            )
+            return
+
+        with open(config_file) as f:
             config_commands = f.read().splitlines()
 
-        print("Sending configuration commands to RTR...")
+        print(f"Sending configuration commands to {device_name}...")
         output = net_connect.send_config_set(config_commands)
         print(output)
 
-        print("Closing connection to RTR")
+        print(f"Closing connection to {device_name}")
         net_connect.disconnect()
 
     except Exception as e:
-        print(f"Error configuring RTR: {e}")
+        print(f"Error configuring {device_name}: {e}")
 
 
 if __name__ == "__main__":
-    start_time = time.time()
-    configure_rtr(device)
+    parser = argparse.ArgumentParser(description="Configure the router.")
+    parser.add_argument("--name", required=True, help="Device name (e.g., RTR)")
+    parser.add_argument("--ip", required=True, help="Device IP address")
+    parser.add_argument(
+        "--type", required=True, help="Netmiko device type (e.g., cisco_ios)"
+    )
+    parser.add_argument("--username", default="admin", help="Device username")
+    parser.add_argument("--password", default="admin", help="Device password")
 
-    end_time = time.time()
-    print(f"Script execution time: {end_time - start_time:.2f} seconds")
+    args = parser.parse_args()
+
+    start_time = time.time()
+    configure_rtr(args.name, args.ip, args.type, args.username, args.password)
     end_time = time.time()
     print(f"Script execution time: {end_time - start_time:.2f} seconds")
