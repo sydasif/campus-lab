@@ -3,6 +3,13 @@ import time
 from pathlib import Path
 
 import netmiko
+from inventory_manager import (
+    get_credentials,
+    get_device_info,
+    load_inventory,
+    map_device_type,
+)
+from output_utils import print_section_header, print_status, print_summary
 
 
 def configure_access(device_name, ip, device_type, username, password):
@@ -13,45 +20,79 @@ def configure_access(device_name, ip, device_type, username, password):
         "password": password,
     }
     try:
-        print(f"Connecting to {device_name} ({ip})...")
+        print_status(f"Connecting to {device_name} ({ip})...", "connecting")
         net_connect = netmiko.ConnectHandler(**device_params)
-        print(f"Successfully connected to {device_name}")
+        print_status(f"Successfully connected to {device_name}", "success")
 
         # Determine the config file based on the device name
         # Assuming config files are named like access1.ios, access2.ios
         config_file = f"configs/{device_name.lower()}.ios"
         if not Path(config_file).exists():
-            print(
-                f"Error: Configuration file {config_file} not found for {device_name}"
+            print_status(
+                f"Configuration file {config_file} not found for {device_name}", "error"
             )
             return
 
         config_commands = Path(config_file).read_text(encoding="utf-8").splitlines()
 
-        print(f"Sending configuration commands to {device_name}...")
+        print_status(f"Sending configuration commands to {device_name}...", "info")
         output = net_connect.send_config_set(config_commands)
-        print(output)
+        print(output)  # No color for raw device output
 
-        print(f"Closing connection to {device_name}")
+        print_status(
+            f"Closing connection to {device_name}", "connecting"
+        )  # Changed to yellow
         net_connect.disconnect()
+        print_status(
+            f"Configuration of {device_name} completed successfully.", "success"
+        )
 
     except Exception as e:
-        print(f"Error configuring {device_name}: {e}")
+        print_status(f"Error configuring {device_name}: {e}", "error")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Configure an access device.")
     parser.add_argument("--name", required=True, help="Device name (e.g., ACCESS1)")
-    parser.add_argument("--ip", required=True, help="Device IP address")
+    parser.add_argument("--ip", help="Device IP address (optional, will use inventory)")
     parser.add_argument(
-        "--type", required=True, help="Netmiko device type (e.g., cisco_ios)"
+        "--type",
+        help="Netmiko device type (e.g., cisco_ios) (optional, will use inventory)",
     )
-    parser.add_argument("--username", default="admin", help="Device username")
-    parser.add_argument("--password", default="admin", help="Device password")
+    parser.add_argument(
+        "--username", help="Device username (optional, will use inventory)"
+    )
+    parser.add_argument(
+        "--password", help="Device password (optional, will use inventory)"
+    )
 
     args = parser.parse_args()
 
+    inventory_file = Path("clab-campus/nornir-simple-inventory.yml")
+    inventory = load_inventory(inventory_file)
+
+    if not inventory:
+        print_status("Failed to load inventory. Exiting.", "error")
+        exit(1)
+
+    device_info = get_device_info(inventory, args.name)
+    if not device_info:
+        exit(1)
+
+    ip = args.ip or device_info.get("hostname")
+    device_type = args.type or map_device_type(device_info.get("platform"))
+    username, password = get_credentials(device_info)
+    username = args.username or username
+    password = args.password or password
+
+    if not all([ip, device_type, username, password]):
+        print_status(
+            "Missing required device information (IP, type, username, or password).",
+            "error",
+        )
+        exit(1)
+
     start_time = time.time()
-    configure_access(args.name, args.ip, args.type, args.username, args.password)
+    configure_access(args.name, ip, device_type, username, password)
     end_time = time.time()
-    print(f"Script execution time: {end_time - start_time:.2f} seconds")
+    print_status(f"Script execution time: {end_time - start_time:.2f} seconds", "info")
