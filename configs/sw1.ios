@@ -24,6 +24,7 @@ no shutdown
 interface Vlan10
 no shutdown
 ip address 10.10.10.2/24
+vrrp 10 priority-level 100
 vrrp 10 advertisement interval 10
 vrrp 10 ipv4 10.10.10.1
 vrrp 10 ipv4 version 3

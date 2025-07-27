@@ -32,6 +32,7 @@ vrrp 10 ipv4 version 3
 interface Vlan20
 no shutdown
 ip address 10.20.20.2/24
+vrrp 20 priority-level 100
 vrrp 20 advertisement interval 10
 vrrp 20 ipv4 10.20.20.1
 vrrp 20 ipv4 version 3
