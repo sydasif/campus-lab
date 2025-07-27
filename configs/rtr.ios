@@ -1,10 +1,13 @@
 hostname RTR
+!
 interface Loopback0
 ip address 1.1.1.1 255.255.255.255
+!
 interface Ethernet0/1
 description Link to DIST-SW-01
 ip address 10.1.1.1 255.255.255.252
 no shutdown
+!
 interface Ethernet0/2
 description Link to DIST-SW-02
 ip address 10.1.2.1 255.255.255.252
