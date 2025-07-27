@@ -55,9 +55,9 @@ topology:
       kind: linux
       mgmt-ipv4: 192.168.122.102
       exec:
-        - ip addr add 10.30.30.100/24 dev eth1
+        - ip addr add 10.20.20.100/24 dev eth1
         - ip route del default via 192.168.122.1
-        - ip route add default via 10.30.30.1
+        - ip route add default via 10.20.20.1
         - echo "nameserver 8.8.8.8" > /etc/resolv.conf
         - apk add --no-cache iputils tcpdump curl iperf3 nmap
 
@@ -65,8 +65,8 @@ topology:
     - endpoints: ["RTR:eth1", "SW1:eth1"]
     - endpoints: ["RTR:eth2", "SW2:eth1"]
 
+    - endpoints: ["SW1:eth2", "SW2:eth2"]
     - endpoints: ["SW1:eth5", "SW2:eth5"]
-    - endpoints: ["SW1:eth6", "SW2:eth6"]
 
     - endpoints: ["SW1:eth3", "ACCESS1:eth1"]
     - endpoints: ["SW1:eth4", "ACCESS2:eth1"]
