@@ -11,13 +11,13 @@ no shutdown
 !
 interface Ethernet3
 description ACCESS1 LINK
-switchport trunk allowed vlan 10,20
+switchport trunk allowed vlan 10
 switchport mode trunk
 no shutdown
 !
 interface Ethernet4
 description ACCESS2 LINK
-switchport trunk allowed vlan 10,20
+switchport trunk allowed vlan 20
 switchport mode trunk
 no shutdown
 !
@@ -31,7 +31,7 @@ vrrp 10 ipv4 version 3
 interface Vlan20
 no shutdown
 ip address 10.20.20.3/24
-vrrp 20 priority-level 90
+vrrp 20 priority-level 110
 vrrp 20 advertisement interval 10
 vrrp 20 ipv4 10.20.20.1
 vrrp 20 ipv4 version 3
