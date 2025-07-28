@@ -33,4 +33,4 @@ def push_host_config(task):
 nr = InitNornir(config_file="config.yaml")
 results = nr.run(task=push_host_config)
 
-print_result(results)  # type: ignore
+print_result(results)
